@@ -1,4 +1,4 @@
-## Histogram shiny app
+## Cellplot shiny app
 
 This app has been developed to work inside a docker container (Dockerfile file available [here](https://github.com/mpg-age-bioinformatics/shiny)).
 
