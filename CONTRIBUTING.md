@@ -24,10 +24,6 @@ Stopping the RStudio server:
 ```bash
 docker exec -i -t shiny sudo rstudio-server stop
 ```
-Removing the image once you've stopped the container:
-```bash
-docker rmi shiny
-```
 Submitting your changes to the repo's app:
 ```bash
 cd ~/shiny/cellplot

@@ -26,3 +26,12 @@ docker run --rm -p 3838:3838 -p 8787:8787 \
 --name shiny shiny
 ```
 Access the app on your browser over [http://localhost:3838/cellplot](http://localhost:3838/cellplot).
+
+The container can be stopped and the container removed with:
+```bash
+docker stop shiny && docker rm shiny
+``` 
+Removing the image once you've stopped the container:
+```bash
+docker rmi shiny
+```
