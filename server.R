@@ -90,7 +90,9 @@ shinyServer(function(input, output, session) {
     
     D<-D[D["Category"] == input$categories, ]
     D <- D[order(D$PValue),]
-    D <- D[1:input$nterms,]
+    nterms=input$nterms
+    if (nterms >= nrow(D)) nterms = nrow(D)
+    D <- D[1:nterms,]
     
     D["GenesSignificant"]<-D$Genes
     genes<-D$GenesSignificant
