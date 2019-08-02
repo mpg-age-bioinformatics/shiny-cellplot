@@ -42,7 +42,7 @@ shinyUI( fluidPage(
       selectInput("logfcsel","Select Log2(FC) Column", choices = c(NULL), selected = NULL),
       #selectInput("padjsel","Select P Adj. Column", choices = c(NULL), selected = NULL),
       sliderInput('nterms',  "Number of terms to plot", min = 1, max = 40, value = 40, step = 1),
-      sliderInput('cellbordersize',  "Border width for each cell", min = 0, max = 10, value = 1, step = 1),
+      sliderInput('cellbordersize',  "Border width for each cell", min = 1, max = 10, value = 1, step = 1),
       checkboxInput("cellborder", "Cell border", TRUE),
       hr(),
       textInput("outfile", "Output file name", value="cellplots"),
