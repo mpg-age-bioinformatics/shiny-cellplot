@@ -88,7 +88,8 @@ shinyServer(function(input, output, session) {
     DD['GenesSignificant']<-siggenes
     #dput(DD,"/srv/shiny-server/cellplot/test.ref.R")
     
-    D<-D[D["Category"] == input$categories, ]
+    #cat(file=stderr(), input$categories, "\n")
+    D<-D[D$Category %in% input$categories, ]
     D <- D[order(D$PValue),]
     nterms=input$nterms
     if (nterms >= nrow(D)) nterms = nrow(D)
