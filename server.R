@@ -14,7 +14,7 @@ cell.plot_ = function(
   x, cells, x.col=NULL, cell.col=c("deepskyblue2","white","coral"),
   inf.shading = 30/cell.lwd,  space=0.1, x.mar=c(0.2, 0), y.mar = c(0.1, 0), x.bound=NULL, lab.cex = 1, xdes.cex=1, xlab.cex=1, xlab.ticks=5,
   sym=FALSE, cell.lwd=2, cell.outer=2, cell.sort=T, cell.limit=30, cell.bounds=NULL, elem.bounds=NULL, xlab="GO Term Enrichment",
-  key=T, key.lab="Differential Expression", key.n=11, spacers=NULL, bar.scale=1, gridlines=T, cellborder=NA, ... )
+  key=T, key.lab="Differential Expression", key.n=11, spacers=NULL, bar.scale=1, gridlines=T, cellborder=NA, both.sides = 'yes', ... )
 {
   # parameter checks
   if(!is.null(x.bound)){ if(!(is.numeric(x.bound) && (x.bound > 0)) ) {
@@ -68,11 +68,22 @@ cell.plot_ = function(
   if (!is.null(cell.bounds) & is.numeric(cell.bounds) ) { cellbound = cell.bounds }
   if (sym) { cellbound = rep( max(abs(cellbound)),2 ) * c(-1,1) }
   # cellcolmap = seq( cellbound[1], cellbound[2], length.out=101 )  
-  cellcolmap = c( seq( cellbound[1], 0, length.out=50 ), 0, seq( 0, cellbound[2], length.out=50 ) )
-  names(cellcolmap) = c( colorRampPalette( c(cell.col[1], cell.col[2]) )(50),
-                         cell.col[2],
-                         colorRampPalette( c(cell.col[2], cell.col[3]) )(50) )
   
+  # inlcude here, if color should be centered around 0 or only up/down is being visualized
+  
+  if (both.sides == 'no'){
+    cellcolmap = c(seq(cellbound[1], cellbound[2], length.out = 50))
+    names(cellcolmap) = c(colorRampPalette(c(cell.col[1], cell.col[2]))(50))
+    
+    
+  } else {
+    cellcolmap = c( seq( cellbound[1], 0, length.out=50 ), 0, seq( 0, cellbound[2], length.out=50 ) )
+    names(cellcolmap) = c( colorRampPalette( c(cell.col[1], cell.col[2]) )(50),
+                           cell.col[2],
+                           colorRampPalette( c(cell.col[2], cell.col[3]) )(50) )
+    
+  }
+
   if (any(cellinf)) {
     if (key.n < 5) stop("key.n must be >4 when infinite values are present")
   } else {
@@ -267,6 +278,11 @@ shinyServer(function(input, output, session) {
     #  updateSelectInput(session, "padjsel","Select P Adj. Column", choices = vars, selected = NULL)
     #}
     
+    # need to select a category otherwise no plot
+    validate(
+      need(!is.null(input$categories), paste("please select at least one category"))
+    )
+    
     req(!is.null(input$categories))
     req( input$genessel != "") 
     req( input$logfcsel != "") 
@@ -297,19 +313,36 @@ shinyServer(function(input, output, session) {
     return(D)
   })
   
+  # color
+  cell.col <- reactive({
+    cell.col = gsub('[ ]', '', input$cell.col)
+    cell.col = unlist(strsplit(cell.col, ','))  
+  })
+
   plot.cellplot<-reactive({
-    
+
     x<-plot.data()
+
+    x_mar = 1 - input$x_mar
+    y_mar = 1 - input$y_mar
     cell.plot_(x = setNames(x$LogEnrich, x$Term), 
               cells = x$log2FoldChange, 
-              main ="GO enrichment", 
-              x.mar = c(.5, 0.1),
+              main = input$text.main, 
+              x.mar = c(x_mar, 0),
               key.n = 7, 
-              y.mar = c(.1, 0), 
+              y.mar = c(y_mar, 0), 
+              lab.cex = input$label_size,
+              xlab.cex = input$label_size,
+              xdes.cex = input$label_size,
+              key.lab = input$text.key,
+              xlab = input$text.xaxis,
+              both.sides = input$both.sides,
+              cell.col = cell.col(),
               cex = 1.6, 
-              cell.outer = 3, 
+              cell.outer = 2, 
               bar.scale = .7, 
               space = .2,
+              cell.limit = input$cell.limit,
               cell.lwd = input$cellbordersize,
               cellborder=input$cellborder)
   })
@@ -374,18 +407,28 @@ shinyServer(function(input, output, session) {
     content = function(filename){
       pdf(filename,height = 12.75, width = 13.50)
       x<-plot.data()
+      x_mar = 1 - input$x_mar
+      y_mar = 1 - input$y_mar
       cell.plot_(x = setNames(x$LogEnrich, x$Term), 
-                cells = x$log2FoldChange, 
-                main ="GO enrichment", 
-                x.mar = c(.5, 0.1),
-                key.n = 7, 
-                y.mar = c(.1, 0.1), 
-                cex = 1.6, 
-                cell.outer = 3, 
-                bar.scale = .7, 
-                space = .2,
-                cell.lwd = input$cellbordersize,
-                cellborder=input$cellborder)
+                 cells = x$log2FoldChange, 
+                 main = input$text.main, 
+                 x.mar = c(x_mar, 0),
+                 key.n = 7, 
+                 y.mar = c(y_mar, 0), 
+                 lab.cex = input$label_size,
+                 xlab.cex = input$label_size,
+                 xdes.cex = input$label_size,
+                 key.lab = input$text.key,
+                 xlab = input$text.xaxis,
+                 both.sides = input$both.sides,
+                 cell.col = cell.col(),
+                 cex = 1.6, 
+                 cell.outer = 2, 
+                 bar.scale = .7, 
+                 space = .2,
+                 cell.limit = input$cell.limit,
+                 cell.lwd = input$cellbordersize,
+                 cellborder=input$cellborder)
       dev.off()
     }
     
