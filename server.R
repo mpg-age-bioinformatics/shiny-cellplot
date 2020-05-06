@@ -8,6 +8,8 @@ gitversion <- function(){
 }
 library(shiny)
 library(CellPlot)
+library(xlsx)
+
 futile.logger::flog.threshold(futile.logger::ERROR, name = "cellplotLogger")
 
 cell.plot_ = function(

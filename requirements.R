@@ -18,5 +18,14 @@ if(!require(futile.logger)){
   library(futile.logger)
 }
 
+if(!require(futile.logger)){
+  install.packages("futile.logger", dependencies = TRUE)
+  library(futile.logger)
+}
+if(!require(futile.logger)){
+  install.packages("xlsx", dependencies = TRUE)
+  library(xlsx)
+}
+
 
 quit(save="no")
