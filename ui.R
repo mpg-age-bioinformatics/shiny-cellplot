@@ -51,6 +51,7 @@ shinyUI( fluidPage(
       submitButton('submit'),
       hr(),
       textInput('cell.col', 'Input colors for cells', value = "deepskyblue2, white, coral" ),
+      p("Pick colors from ", a(href = "http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf", "this table", target="_blank"), ", or input RGB values"),
       radioButtons("both.sides", "Colors centered around 0", choices = c("yes","no"), selected = "yes", inline = TRUE),
       
       sliderInput('cellbordersize',  "Border width for each cell", min = 0.5, max = 4, value = 1, step = 0.2),
@@ -60,7 +61,7 @@ shinyUI( fluidPage(
       hr(),
       
       sliderInput('x_mar', 'Select width of plot area', min = 0, max = 1, value = 0.35, step = 0.01),
-      sliderInput('y_mar', 'Select width of plot area', min = 0, max = 1, value = 0.99, step = 0.01),
+      sliderInput('y_mar', 'Select height of plot area', min = 0, max = 1, value = 0.99, step = 0.01),
       
       sliderInput('label_size', 'Select term label size', min = 0.1, 2, value = 1, step = 0.01),
       hr(),

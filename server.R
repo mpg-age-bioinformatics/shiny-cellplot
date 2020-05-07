@@ -1,4 +1,5 @@
 .libPaths("/srv/shiny-server/cellplot/libs")
+
 gitversion <- function(){ 
   git<-read.csv("/srv/shiny-server/.git/modules/cellplot/refs/heads/master", header=FALSE)
   git<-git$V1
@@ -235,10 +236,19 @@ shinyServer(function(input, output, session) {
     }
     
     if(filetype == 'xlsx'){
-      D <- read.xlsx(inFile$datapath, sheetIndex = 1, header = input$header)
+      D <- read.xlsx(inFile$datapath, sheetIndex = 1, header = input$header, colIndex = c(1:13))
     } else {
       D <- read.csv(inFile$datapath, header = input$header, sep = filetype)
     }
+    
+    # make sure neccessary columns are there
+    validate(
+      need(sum(c('Category', 'Term', "Fold.Enrichment", 'Genes') %in% names(D)) == 4, 
+           paste("please make sure that the following columns are in your DAVID table:\n
+                 'Category', 'Term', 'Fold Enrichment', 'Genes'\n
+                 It is crucial that they have exacly this spelling and are within the first 13 columns"))
+    )
+    
     
     Categories<-unique(D$Category)
     
@@ -306,6 +316,14 @@ shinyServer(function(input, output, session) {
     class(genes)
     genes<-lapply( genes, function(x) strsplit(toString(x), ", ")[[1]])
     D$GenesSignificant<-genes
+    
+    # make sure all genes have a log2FC
+    all_genes = unlist(D$GenesSignificant)
+    missing.log2fc = unique(all_genes[!all_genes %in% DD$GenesSignificant])
+    validate(
+      need(length(missing.log2fc) == 0, paste("ERROR: The following gene has no log2 fold change\n", missing.log2fc))
+    )
+    
     
     D$log2FoldChange<-lapply( genes, function(x) DD[DD$GenesSignificant %in% x, input$logfcsel ])
     #D$padj<- lapply( genes, function(x) DD[DD$GenesSignificant %in% x, input$padjsel ])
