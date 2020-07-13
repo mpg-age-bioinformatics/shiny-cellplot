@@ -242,12 +242,12 @@ shinyServer(function(input, output, session) {
     }
     
     # make sure neccessary columns are there
-    validate(
-      need(sum(c('Category', 'Term', "Fold.Enrichment", 'Genes') %in% names(D)) == 4, 
-           paste("please make sure that the following columns are in your DAVID table:\n
-                 'Category', 'Term', 'Fold Enrichment', 'Genes'\n
-                 It is crucial that they have exacly this spelling and are within the first 13 columns"))
-    )
+    # validate(
+    #   need(sum(c('Category', 'Term', "Fold.Enrichment", 'Genes') %in% names(D)) == 4, 
+    #        paste("please make sure that the following columns are in your DAVID table:\n
+    #              'Category', 'Term', 'Fold Enrichment', 'Genes'\n
+    #              It is crucial that they have exacly this spelling and are within the first 13 columns"))
+    # )
     
     
     Categories<-unique(D$Category)
@@ -276,6 +276,11 @@ shinyServer(function(input, output, session) {
     
     DD[DD == ''] <- NA
 
+    vars_ <- names(D)
+    if (is.null(input$xvalues)){
+      updateSelectInput(session, "xvalues","Select values for x-axis", choices = vars_, selected = NULL)
+    }
+
     vars <- names(DD)
     if (is.null(input$categories)){
       updateSelectInput(session, "categories","Select Categories", choices = Categories, selected = NULL)
@@ -294,7 +299,8 @@ shinyServer(function(input, output, session) {
     validate(
       need(!is.null(input$categories), paste("please select at least one category"))
     )
-    
+
+    req( input$xvalues != "") 
     req(!is.null(input$categories))
     req( input$genessel != "") 
     req( input$logfcsel != "") 
@@ -328,7 +334,8 @@ shinyServer(function(input, output, session) {
     D$log2FoldChange<-lapply( genes, function(x) DD[DD$GenesSignificant %in% x, input$logfcsel ])
     #D$padj<- lapply( genes, function(x) DD[DD$GenesSignificant %in% x, input$padjsel ])
     
-    D$LogEnrich<-D$Fold.Enrichment
+    # D$LogEnrich<-D$Fold.Enrichment
+    D$logEnrich<-D[input$xvalues]
     
     return(D)
   })

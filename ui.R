@@ -37,6 +37,7 @@ shinyUI( fluidPage(
       checkboxInput("header2", "Header", TRUE),
       helpText(a(href = "https://datashare.mpcdf.mpg.de/s/mBp904u65knP1Fr/download", "Example input")),
       hr(),
+      selectInput("xvalues","Select values for x-axis", choices = c(NULL), selected = NULL),
       selectInput("categories","Select Categories", choices = c(NULL), multiple = TRUE, selected = NULL),
       selectInput("genessel","Select Genes Name/ID Column",  choices = c(NULL), selected = NULL),
       selectInput("logfcsel","Select Log2(FC) Column", choices = c(NULL), selected = NULL),
