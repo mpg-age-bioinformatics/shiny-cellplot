@@ -312,7 +312,7 @@ shinyServer(function(input, output, session) {
 
     #cat(file=stderr(), head(DD), "\n")
     #print(DD['GenesSignificant'])
-    dput(DD,"/srv/shiny-server/cellplot/test.ref.R")
+    #dput(DD,"/srv/shiny-server/cellplot/test.ref.R")
     
     #cat(file=stderr(), input$categories, "\n")
     D<-D[D$Category %in% input$categories, ]
