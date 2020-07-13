@@ -277,7 +277,7 @@ shinyServer(function(input, output, session) {
     DD[DD == ''] <- NA
 
     vars_ <- names(D)
-    if (is.null(input$xvalues)){
+    if ( input$xvalues == ""){
       updateSelectInput(session, "xvalues","Select values for x-axis", choices = vars_, selected = NULL)
     }
 
@@ -308,7 +308,11 @@ shinyServer(function(input, output, session) {
     
     siggenes<-DD[input$genessel]
     DD['GenesSignificant']<-siggenes
-    #dput(DD,"/srv/shiny-server/cellplot/test.ref.R")
+    DD['GenesSignificant']<-toupper(DD$GenesSignificant)
+
+    #cat(file=stderr(), head(DD), "\n")
+    #print(DD['GenesSignificant'])
+    dput(DD,"/srv/shiny-server/cellplot/test.ref.R")
     
     #cat(file=stderr(), input$categories, "\n")
     D<-D[D$Category %in% input$categories, ]
