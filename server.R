@@ -338,8 +338,8 @@ shinyServer(function(input, output, session) {
     D$log2FoldChange<-lapply( genes, function(x) DD[DD$GenesSignificant %in% x, input$logfcsel ])
     #D$padj<- lapply( genes, function(x) DD[DD$GenesSignificant %in% x, input$padjsel ])
     
-    # D$LogEnrich<-D$Fold.Enrichment
-    D$logEnrich<-D[input$xvalues]
+    #D$LogEnrich<-D$Fold.Enrichment
+    D$LogEnrich<-D[,input$xvalues]
     
     return(D)
   })
