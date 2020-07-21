@@ -321,13 +321,14 @@ shinyServer(function(input, output, session) {
     if (nterms >= nrow(D)) nterms = nrow(D)
     D <- D[1:nterms,]
     
-    D["GenesSignificant"]<-D$Genes
+    D["GenesSignificant"]<-toupper(D$Genes)
     genes<-D$GenesSignificant
     class(genes)
     genes<-lapply( genes, function(x) strsplit(toString(x), ", ")[[1]])
     D$GenesSignificant<-genes
     
     # make sure all genes have a log2FC
+    
     all_genes = unlist(D$GenesSignificant)
     missing.log2fc = unique(all_genes[!all_genes %in% DD$GenesSignificant])
     validate(
