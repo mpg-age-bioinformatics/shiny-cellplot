@@ -31,10 +31,8 @@ git add .
 git commit -m "<describe your changes here>"
 git push origin HEAD:master
 ```
-And then tell the main project to start tracking the updated version:
-```bash
-cd ~/shiny
-git add cellplot
-git commit -m cellplot
-git push
+Adding a tag:
+```
+git tag -e -a <major>.<minor>.<patch> HEAD
+git push origin --tags
 ```
